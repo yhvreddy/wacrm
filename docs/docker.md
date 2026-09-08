@@ -31,6 +31,28 @@ is included.
 > the healthcheck don't target. Compose pins it to 3000 for that
 > reason.
 
+## Production email verification URLs
+
+In Supabase Dashboard, open **Authentication > URL Configuration**:
+
+- Set **Site URL** to your public app URL, for example
+  `https://crm.example.com`.
+- Add `https://crm.example.com/` to **Redirect URLs**. If you use team
+  invitations, also add `https://crm.example.com/join/*`.
+
+Replace the example domain with your live domain. Signup sends the browser's
+origin as the email redirect destination, so register from your public URL.
+Supabase must allow that destination; otherwise it can fall back to its Site
+URL. Setting `NEXT_PUBLIC_SITE_URL` in the app does not update Supabase Auth
+settings. Keep the confirmation email template's verification link pointed
+at `{{ .ConfirmationURL }}` unless you have configured a custom verification
+handler.
+
+After deploying or correcting these settings, test with a fresh confirmation
+email; previously sent emails retain their original links.
+
+See [Supabase redirect URL configuration](https://supabase.com/docs/guides/auth/redirect-urls).
+
 ## Build-time vs runtime variables
 
 - `NEXT_PUBLIC_*` variables are **inlined into the client bundle at

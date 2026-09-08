@@ -62,11 +62,12 @@ function SignupPageInner() {
 
     // If we have an invite token, point Supabase's verification
     // email back at the join page so the user can accept after
-    // verifying. Without a token, Supabase uses its default
-    // redirect (the app root).
+    // verifying. Regular signups explicitly return to this site's
+    // root instead of relying on Supabase's default Site URL, which
+    // may still point to localhost. Allow these URLs in Supabase Auth.
     const emailRedirectTo = inviteToken
       ? `${window.location.origin}/join/${encodeURIComponent(inviteToken)}`
-      : undefined;
+      : `${window.location.origin}/`;
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -75,7 +76,7 @@ function SignupPageInner() {
         data: {
           full_name: fullName,
         },
-        ...(emailRedirectTo ? { emailRedirectTo } : {}),
+        emailRedirectTo,
       },
     });
 
